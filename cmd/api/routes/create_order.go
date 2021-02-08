@@ -18,12 +18,7 @@ type OrderRequestJson struct {
 	Items []OrderItemRequestJson `json:"items"`
 }
 
-type OrderItemResponseJson struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
-}
-
-type OrderResponseJson struct {
+type CreateOrderResponseJson struct {
 	Id int `json:"id"`
 }
 
@@ -43,5 +38,5 @@ func CreateOrderAction(writer http.ResponseWriter, request *http.Request) {
 	}
 	result := process.CreateOrder(orderProcessRequest)
 
-	json.NewEncoder(writer).Encode(OrderResponseJson{Id: result.Id})
+	json.NewEncoder(writer).Encode(CreateOrderResponseJson{Id: result.Id})
 }

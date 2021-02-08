@@ -10,15 +10,15 @@ import (
 )
 
 func CreateOrder(createOrderRequest request_dto.CreateOrderRequest) result_dto.CreateOrderResult {
-	order := models.Order{}
+	order := models.Order{Email: createOrderRequest.Email}
 	for _, orderItemRequest := range createOrderRequest.Items {
-		priceFloat, err := strconv.ParseFloat(orderItemRequest.Price, 64)
+		priceInt, err := strconv.ParseInt(orderItemRequest.Price, 10, 64)
 		if err != nil {
 			fmt.Println(err)
 			panic(err)
 		}
-		priceInt := int(priceFloat)
-		orderItem := models.OrderItem{Name: orderItemRequest.Name, Price: priceInt}
+
+		orderItem := models.OrderItem{Name: orderItemRequest.Name, Price: int(priceInt + 10)}
 		order.OrderItems = append(order.OrderItems, orderItem)
 	}
 	storage.SaveOrder(&order)
