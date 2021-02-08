@@ -1,17 +1,26 @@
 package process
 
 import (
-	"food_order/app/process/request",
-	"food_order/app/process/result"
+	"fmt"
 	"food_order/app/models"
+	"food_order/app/process/request_dto"
+	"food_order/app/process/result_dto"
+	"food_order/app/storage"
+	"strconv"
 )
 
-func CreateOrder(request.CreateOrderRequest) result.CreateOrderResult {
+func CreateOrder(createOrderRequest request_dto.CreateOrderRequest) result_dto.CreateOrderResult {
 	order := models.Order{}
-	for _, OrderItemRequest := range CreateOrderRequest.Items {
-		orderItem := models.OrderItem{Name: OrderItemRequest.Name, Price: OrderItemRequest.Price}
+	for _, orderItemRequest := range createOrderRequest.Items {
+		priceFloat, err := strconv.ParseFloat(orderItemRequest.Price, 64)
+		if err != nil {
+			fmt.Println(err)
+			panic(err)
+		}
+		priceInt := int(priceFloat)
+		orderItem := models.OrderItem{Name: orderItemRequest.Name, Price: priceInt}
 		order.OrderItems = append(order.OrderItems, orderItem)
 	}
-	data.SaveOrder(&order)
-	return CreateOrderResult{success: true}
+	storage.SaveOrder(&order)
+	return result_dto.CreateOrderResult{Success: true, Id: int(order.ID)}
 }

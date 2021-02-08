@@ -8,6 +8,8 @@ import (
 
 	"food_order/cmd/api/routes"
 
+	"food_order/app/storage"
+
 	"github.com/gorilla/mux"
 )
 
@@ -18,8 +20,8 @@ func indexAction(writer http.ResponseWriter, request *http.Request) {
 
 func getAllOrdersAction(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Add("Content-Type", "application/json")
-	//orders := data.GetAllOrders()
-	json.NewEncoder(writer).Encode(request)
+	orders := storage.GetAllOrders()
+	json.NewEncoder(writer).Encode(orders)
 }
 
 func Start() {
