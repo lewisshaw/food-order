@@ -5,26 +5,13 @@ import (
 	"fmt"
 	"food_order/app/process"
 	"food_order/app/process/request_dto"
+	"food_order/cmd/api/json_structures"
 	"net/http"
 )
 
-type OrderItemRequestJson struct {
-	Name  string `json:"name"`
-	Price string `json:"price"`
-}
-
-type OrderRequestJson struct {
-	Email string                 `json:"email"`
-	Items []OrderItemRequestJson `json:"items"`
-}
-
-type CreateOrderResponseJson struct {
-	Id int `json:"id"`
-}
-
 func CreateOrderAction(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Add("Content-Type", "application/json")
-	var orderRequestJson OrderRequestJson
+	var orderRequestJson json_structures.CreateOrderRequestJson
 	err := json.NewDecoder(request.Body).Decode(&orderRequestJson)
 	if err != nil {
 		fmt.Fprint(writer, fmt.Sprintf(`["Error: %s"]`, err.Error()))
@@ -38,5 +25,5 @@ func CreateOrderAction(writer http.ResponseWriter, request *http.Request) {
 	}
 	result := process.CreateOrder(orderProcessRequest)
 
-	json.NewEncoder(writer).Encode(CreateOrderResponseJson{Id: result.Id})
+	json.NewEncoder(writer).Encode(json_structures.CreateOrderResponseJson{Id: result.Id})
 }
